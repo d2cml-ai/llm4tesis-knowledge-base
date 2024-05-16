@@ -52,7 +52,7 @@ def get_index() -> SearchIndex:
         return SearchIndex(name = index_name, fields = fields, vector_search = vector_search)
 
 def get_chunks(path: str) -> list[dict[str, str | list[str] | list[float]]]:
-        with open(path, "r", encoding = "latin1") as f:
+        with open(path, "r", encoding = "utf-8-sig") as f:
                 chunks: list[dict[str, str | list[str] | list[float]]] = json.load(f)
         return chunks
 
@@ -65,9 +65,9 @@ def main() -> None:
         with open(chunks_path, "wb") as f:
                 f.write(chunks_blob.download_blob().readall())
         credential: AzureKeyCredential = AzureKeyCredential(AZURE_SEARCH_API_KEY)
-        # index_client = SearchIndexClient(SEARCH_ENDPOINT, credential)
-        # index_config: SearchIndex = get_index()
-        # index_client.create_index(index_config)
+        index_client = SearchIndexClient(SEARCH_ENDPOINT, credential)
+        index_config: SearchIndex = get_index()
+        index_client.create_index(index_config)
         print("Loading chunk embeddings JSON")
         chunks: list[dict[str, str | list[str] | list[float]]] = get_chunks(chunks_path)
         print("Uploading documents")

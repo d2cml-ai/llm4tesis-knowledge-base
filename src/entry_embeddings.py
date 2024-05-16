@@ -24,7 +24,7 @@ def unzip(zip_path: str, extract_path: str) -> None:
         return
 
 def open_file(path: str) -> str:
-        with open(path, "r", encoding = "latin1") as f:
+        with open(path, "r", encoding = "utf-8-sig") as f:
                 text: str = f.read()
         return text
 
@@ -64,7 +64,7 @@ def main() -> None:
         metadata_path: str = os.path.join(raw_data_path, "metadata.json")
         chunks_metadata_path: str = os.path.join(TEMP_DIR_PATH, "chunks.json")
         print("Loading metadata...")
-        with open(metadata_path, "r", encoding = "latin1") as f:
+        with open(metadata_path, "r", encoding = "utf-8-sig") as f:
                 entries_metadata: dict[str, dict[str, list[str]]] = json.load(f)
         chunks_metadata: list[dict[str, str | list[str] | list[float]]] = []
         print(f"Embedding {len(file_paths)} files' chunks. This may take several minutes")
@@ -94,7 +94,7 @@ def main() -> None:
                         entry_chunks_metadata.append(temp_metadata)
                 chunks_metadata += entry_chunks_metadata
         print("\nSaving embeddings and metadata JSON")
-        with open(chunks_metadata_path, "w", encoding="latin1") as f:
+        with open(chunks_metadata_path, "w", encoding="utf-8-sig") as f:
                 json.dump(chunks_metadata, f)
         print("Uploading blob")
         chunks_blob_client: BlobClient = get_blob_client(CHUNK_EMBEDDINGS_BLOB, RAW_DATA_CONTAINER, get_blob_service())
@@ -114,5 +114,5 @@ if __name__ == "__main__":
                 main()
         except Exception as e:
                 raise e
-        # finally:
-        #         cleanup()
+        finally:
+                cleanup()
